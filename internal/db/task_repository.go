@@ -81,10 +81,12 @@ func MarkComplete(ctx context.Context, db *gorm.DB, id uint) error {
 }
 
 
-//getting all the tasks
+// GetAllTasks fetches all tasks from the database, regardless of completion status.
+// It uses GORM's Find method to retrieve all records from the tasks table.
 func GetAllTasks(ctx context.Context, db *gorm.DB) ([]models.Task,error){
 	var tasks []models.Task
 
+	// Use context-aware DB call to safely fetch all task records
 	err:= db.WithContext(ctx).Find(&tasks).Error
 	if err!=nil {
 		return nil, fmt.Errorf("getting tasks: %w",err)
@@ -92,13 +94,45 @@ func GetAllTasks(ctx context.Context, db *gorm.DB) ([]models.Task,error){
 	return tasks, nil
 }
 
-//getting all pending tasks
+// GetPendingTasks fetches only the tasks that are not marked as completed (i.e., pending).
+// This is useful for showing only the active tasks to the user.
 func PendingTasks(ctx context.Context, db *gorm.DB) ([]models.Task, error){
 	var tasks []models.Task
 
+	// Fetch tasks where the "completed" field is false
 	err:= db.WithContext(ctx).Where("completed = ?", false).Find(&tasks).Error
 	if err!= nil{
 		return nil, fmt.Errorf("error in getting pending tasks: %w",err)
 	}
 	return tasks, nil
+}
+
+// UpdateTask updates the title and/or description of a task identified by its ID.
+// It dynamically builds an update map based on non-empty inputs, allowing partial updates.
+// If neither title nor description is provided, it returns an error.
+func UpdateTask(ctx context.Context, db *gorm.DB, id uint, title string, description string) error {
+	if id == 0{
+		return errors.New("id cannot be zero")
+	}
+	// Dynamically build the update map based on what user wants to change
+	update:= make(map[string] interface{})
+
+	if title != ""{
+		update["title"] = title
+	}
+
+	if description!= ""{
+		update["description"] = description
+	}
+
+	// If no fields provided to update, return an error
+	if len(update) == 0{
+		return errors.New("no updates have been made")
+	}
+	// Perform the update query where task ID matches
+	err:= db.WithContext(ctx).Model(&models.Task{}).Where("id = ?",id).Updates(update).Error
+	if err!= nil{
+		return fmt.Errorf("update %d failed: %w", id, err)
+	}
+	return nil
 }
