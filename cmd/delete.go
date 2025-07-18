@@ -25,7 +25,9 @@ For example:
 This action is permanent and cannot be undone.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		id, _:= cmd.Flags().GetUint("id")
-		database, err:= db.MySQL(&config.MySQL{})
+
+		cfg := config.LoadConfig()
+		database, err := db.MySQL(&cfg.MySQL)
 		if err!=nil {
 			log.Fatalf("failed to connect to the database: %v\n", err)
 		}

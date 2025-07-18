@@ -14,7 +14,7 @@ import (
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "ToDo-CLI-using-Cobra",
+	Use:   "todo",
 	Short: "A simple CLI ToDo application to manage tasks efficiently.",
 	Long: `ToDo CLI is a terminal-based task manager built with Golang and Cobra.
 It allows you to add, delete, update, and complete tasks directly from your terminal.

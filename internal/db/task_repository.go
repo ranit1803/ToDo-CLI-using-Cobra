@@ -42,7 +42,7 @@ func DeleteTask(ctx context.Context, db *gorm.DB, id uint) error {
 		return errors.New("id doesn't exist")
 	}
 	// Perform the delete operation for the given ID.
-	err:= db.WithContext(ctx).Delete(&models.Task{}).Error
+	err:= db.WithContext(ctx).Delete(&models.Task{}, id).Error
 	if err!= nil{
 		// Wrap the error with more context so it’s easier to debug.
 		return fmt.Errorf("error in deleting task %d: %w",id, err)

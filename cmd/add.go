@@ -36,6 +36,8 @@ You can later view your tasks using:
 			Description: description,
 			Completed: false,
 			CreatedAt: time.Now(),
+			CompletedAt: nil,
+			UpdatedAt: nil,
 		}
 
 		database, err:= db.MySQL(&config.LoadConfig().MySQL)

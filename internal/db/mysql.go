@@ -1,6 +1,6 @@
 package db
 
-//to run this program 
+//to run this program
 /*
 $env:ConfigPath="config/config.yaml"
 go run main.go
@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"github.com/ranit1803/ToDo-CLI-using-Cobra/internal/config"
+	"github.com/ranit1803/ToDo-CLI-using-Cobra/internal/models"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -37,5 +38,12 @@ func MySQL(cfg *config.MySQL) (*gorm.DB, error){
 		log.Panic("Failed to connect to database")
 	}
 	slog.Info("Connected to the Database", "DataBase", cfg.DBname)
+
+	err = db.AutoMigrate(&models.Task{})
+	if err!=nil{
+		log.Println("failed to migrate the database")
+		return nil,err
+	}
+	log.Println("migration complete")
 	return db, nil
 }
