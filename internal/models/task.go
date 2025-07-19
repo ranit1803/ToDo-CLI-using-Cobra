@@ -13,6 +13,6 @@ type Task struct {
 	Completed   	bool 	`gorm:"default:false" json:"completed"`
 	CreatedAt  		time.Time `json:"created_at"`
 	CompletedAt 	*time.Time `json:"completed_at"`
-	UpdatedAt 		*time.Time `json:"updated_at"`
+	UpdatedAt 		*time.Time `gorm:"column:updated_at;<-:update" json:"updated_at"`
 	DeletedAt 		gorm.DeletedAt `gorm:"index" json:"deleted_at"`
 }

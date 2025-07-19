@@ -22,6 +22,8 @@ func AddTask(ctx context.Context, db *gorm.DB, task *models.Task) error{
 		return errors.New("cannot add a nil task")
 	}
 	
+	task.UpdatedAt = nil
+	
 	// db.WithContext ensures context is passed to GORM — helpful for timeouts, cancellation, etc.
 	err:= db.WithContext(ctx).Create(task).Error
 	if err!=nil {
@@ -129,6 +131,7 @@ func UpdateTask(ctx context.Context, db *gorm.DB, id uint, title string, descrip
 	if len(update) == 0{
 		return errors.New("no updates have been made")
 	}
+	update["updated_at"] = time.Now()
 	// Perform the update query where task ID matches
 	err:= db.WithContext(ctx).Model(&models.Task{}).Where("id = ?",id).Updates(update).Error
 	if err!= nil{
