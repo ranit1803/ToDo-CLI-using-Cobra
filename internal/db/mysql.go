@@ -23,12 +23,12 @@ func MySQL(cfg *config.MySQL) (*gorm.DB, error){
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8&parseTime=True&loc=Local", cfg.User, cfg.Password, cfg.Host,cfg.Port,cfg.DBname)
 
 	//creating a custom logger
-	NewLogger:= logger.New(slog.NewLogLogger(slog.Default().Handler(), slog.LevelInfo),
+	NewLogger:= logger.New(slog.NewLogLogger(slog.Default().Handler(), slog.LevelError),
 	logger.Config{
 		SlowThreshold: 200 * time.Millisecond,
-		LogLevel: logger.Info,
+		LogLevel: logger.Error,
 		IgnoreRecordNotFoundError: true,
-		Colorful: true,
+		Colorful: false,
 	})
 
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
@@ -37,13 +37,13 @@ func MySQL(cfg *config.MySQL) (*gorm.DB, error){
 	if err!=nil {
 		log.Panic("Failed to connect to database")
 	}
-	slog.Info("Connected to the Database", "DataBase", cfg.DBname)
+	// slog.Info("Connected to the Database", "DataBase", cfg.DBname)
 
 	err = db.AutoMigrate(&models.Task{})
 	if err!=nil{
-		log.Println("failed to migrate the database")
+		fmt.Println("failed to migrate the database")
 		return nil,err
 	}
-	log.Println("migration complete")
+	// fmt.Println("migration complete")
 	return db, nil
 }

@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/ranit1803/ToDo-CLI-using-Cobra/internal/config"
+
 	"github.com/ranit1803/ToDo-CLI-using-Cobra/internal/db"
 	"github.com/spf13/cobra"
 )
@@ -26,12 +26,7 @@ This action is permanent and cannot be undone.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		id, _:= cmd.Flags().GetUint("id")
 
-		cfg := config.LoadConfig()
-		database, err := db.MySQL(&cfg.MySQL)
-		if err!=nil {
-			log.Fatalf("failed to connect to the database: %v\n", err)
-		}
-		err = db.DeleteTask(cmd.Context(), database, id)
+		err := db.DeleteTask(cmd.Context(), DB, id)
 		if err!=nil {
 			log.Fatalf("failed to delete the task: %v\n", err)
 		}

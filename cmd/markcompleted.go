@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/ranit1803/ToDo-CLI-using-Cobra/internal/config"
 	"github.com/ranit1803/ToDo-CLI-using-Cobra/internal/db"
 	"github.com/spf13/cobra"
 )
@@ -15,24 +14,20 @@ import (
 // markcompletedCmd represents the markcompleted command
 var markcompletedCmd = &cobra.Command{
 	Use:   "markcompleted",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
+	Short: "Mark a task as completed using its ID.",
+	Long: `The markcompleted command allows you to mark a task as completed by providing its task ID.
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+This helps you update the task status when you've finished working on it. 
+Once marked, the task will appear as completed when listed.
+
+Examples:
+  taskcli markcompleted 3    # Marks the task with ID 3 as completed
+  taskcli markcompleted 12   # Marks task ID 12 as completed`,
 	Run: func(cmd *cobra.Command, args []string) {
 		
 		id, _:= cmd.Flags().GetUint("id")
-		
-		cfg := config.LoadConfig()
-		database, err := db.MySQL(&cfg.MySQL)
-		if err!=nil {
-			log.Fatalf("failed to connect the database: %v", err)
-		}
 
-		err = db.MarkComplete(cmd.Context(),database, id)
+		err := db.MarkComplete(cmd.Context(),DB, id)
 		if err!=nil {
 			log.Fatalf("failed to mark the task: %v\n",err)
 		}

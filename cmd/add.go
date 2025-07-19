@@ -7,8 +7,7 @@ import (
 	"fmt"
 	"log"
 	"time"
-
-	"github.com/ranit1803/ToDo-CLI-using-Cobra/internal/config"
+	
 	"github.com/ranit1803/ToDo-CLI-using-Cobra/internal/db"
 	"github.com/ranit1803/ToDo-CLI-using-Cobra/internal/models"
 	"github.com/spf13/cobra"
@@ -40,12 +39,7 @@ You can later view your tasks using:
 			UpdatedAt: nil,
 		}
 
-		database, err:= db.MySQL(&config.LoadConfig().MySQL)
-		if err!=nil {
-			fmt.Printf("failed to connect to database: %v\n",err)
-		}
-
-		err= db.AddTask(cmd.Context(), database, tasks)
+		err:= db.AddTask(cmd.Context(), DB, tasks)
 		if err!=nil {
 			log.Fatalf("failed to add the task: %v", err)
 		}

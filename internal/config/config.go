@@ -2,8 +2,8 @@ package config
 
 import (
 	"flag"
+	// "fmt"
 	"log"
-	"log/slog"
 	"os"
 	"sync"
 
@@ -56,7 +56,7 @@ func LoadConfig() *Config{
 			if err!= nil {
 				log.Fatal("Failed to load the config",err.Error())
 			}
-			slog.Info("Configuration Loaded Successfully")
+			// fmt.Println("Configuration Loaded Successfully")
 			cfg = &load
 	})
 	return cfg

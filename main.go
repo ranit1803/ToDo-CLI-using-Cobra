@@ -4,8 +4,7 @@ Copyright © 2025 NAME HERE <EMAIL ADDRESS>
 package main
 
 import (
-	"log"
-	"log/slog"
+	"fmt"
 	"os"
 
 	"github.com/ranit1803/ToDo-CLI-using-Cobra/cmd"
@@ -14,17 +13,22 @@ import (
 )
 
 func main() {
-	cmd.Execute()
 
 	//loading the config
 	cfg:= config.LoadConfig()
-	log.Println("Environment",cfg.Env)
-	log.Println("Database ",cfg.MySQL.DBname)
+	if cfg == nil {
+		fmt.Fprintln(os.Stderr,"failed to load the config")
+	}
 
 	//setting up mysql
-	_, err:= db.MySQL(&cfg.MySQL)
+	database, err:= db.MySQL(&cfg.MySQL)
 	if err!=nil {
-		slog.Error("failed to connect to the database","error", err)
+		fmt.Fprintln(os.Stderr,"failed to connect to the database")
 		os.Exit(1)
 	}
+	cmd.SetDB(database)
+	cmd.SetConfig(cfg)
+
+	//setting cli 
+	cmd.Execute()
 }
